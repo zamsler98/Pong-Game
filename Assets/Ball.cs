@@ -1,9 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Helpers;
 
 public class Ball : MonoBehaviour
 {
+    private static readonly double MaxAngleOfBounce = DegreesToRadians(75);
+
+
     [SerializeField]
     float speed;
 
@@ -47,21 +52,18 @@ public class Ball : MonoBehaviour
             enabled = false;
         }
     }
-
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Paddle")
         {
-            bool isRight = other.GetComponent<Paddle>().isRight;
+            var paddle = other.GetComponent<Paddle>();
 
-            if (isRight && direction.x > 0)
-            {
-                direction.x = -direction.x;
-            }
-            if (!isRight && direction.x < 0)
-            {
-                direction.x = -direction.x;
-            }
+            var diffInYValues = other.transform.position.y - transform.position.y;
+            var maxDifference = radius + paddle.Height;
+            var percentOfCenter = diffInYValues / maxDifference;
+            var bounceAngle = percentOfCenter * MaxAngleOfBounce;
+            direction = new Vector2(paddle.isRight ? -1 : 1, (float)-Math.Sin(bounceAngle));
+            direction.Normalize();
         }
     }
 }

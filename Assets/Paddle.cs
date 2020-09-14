@@ -11,6 +11,18 @@ public class Paddle : MonoBehaviour
     string input;
     public bool isRight;
 
+    public float Height
+    {
+        get
+        {
+            return height;
+        }
+        private set
+        {
+            height = value;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,12 +32,31 @@ public class Paddle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float move = Input.GetAxis(input) * Time.deltaTime * speed;
+        var axis = Input.GetAxis(input);
+        if (axis > 0)
+        {
+            MoveUp();
+        }
+        else if (axis < 0)
+        {
+            MoveDown();
+        }
+    }
+
+    public void MoveDown()
+    {
+        float move = -1 * Time.deltaTime * speed;
 
         if (transform.position.y < GameManager.bottomLeft.y + height / 2 && move < 0)
         {
             move = 0;
         }
+        transform.Translate(move * Vector2.up);
+    }
+
+    public void MoveUp()
+    {
+        float move = Time.deltaTime * speed;
         if (transform.position.y > GameManager.topRight.y - height / 2 && move > 0)
         {
             move = 0;
