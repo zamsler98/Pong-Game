@@ -1,12 +1,21 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameType GameType { get; private set; }
+
     public Ball ball;
     public Paddle paddle;
 
     public static Vector2 bottomLeft;
     public static Vector2 topRight;
+
+    public static void StartGame(GameType gameType)
+    {
+        GameType = gameType;
+        SceneManager.LoadScene("Game");
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -27,4 +36,12 @@ public class GameManager : MonoBehaviour
     {
 
     }
+}
+
+public enum GameType
+{
+    EASY,
+    MEDIUM,
+    HARD,
+    MULTIPLAYER
 }
