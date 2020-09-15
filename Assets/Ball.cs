@@ -7,10 +7,13 @@ using static Helpers;
 public class Ball : MonoBehaviour
 {
     private static readonly double MaxAngleOfBounce = DegreesToRadians(75);
+    public AudioSource audioClip;
 
 
     [SerializeField]
+
     public float speed;
+
 
     public float radius;
     public Vector2 Direction
@@ -44,13 +47,20 @@ public class Ball : MonoBehaviour
     public void Update()
     {
         transform.Translate(direction * speed * Time.deltaTime);
+        var clip = Resources.Load<AudioClip>("Sounds/force-field-impact");
 
         if (transform.position.y < GameManager.bottomLeft.y + radius && direction.y < 0)
         {
+            Debug.Log("Bottom");
+            
+            audioClip.PlayOneShot(clip);
             direction.y = -direction.y;
         }
         if (transform.position.y > GameManager.topRight.y - radius && direction.y > 0)
         {
+            Debug.Log("Top");
+            
+            audioClip.PlayOneShot(clip);
             direction.y = -direction.y;
         }
 
@@ -59,6 +69,8 @@ public class Ball : MonoBehaviour
         {
             Debug.Log("Right player wins");
 
+            clip = Resources.Load<AudioClip>("Sounds/game-over");
+            audioClip.PlayOneShot(clip);
             Time.timeScale = 0;
             enabled = false;
         }
@@ -66,6 +78,8 @@ public class Ball : MonoBehaviour
         {
             Debug.Log("Left player wins");
 
+            clip = Resources.Load<AudioClip>("Sounds/game-over-arcade");
+            audioClip.PlayOneShot(clip);
             Time.timeScale = 0;
             enabled = false;
         }
@@ -75,6 +89,7 @@ public class Ball : MonoBehaviour
         if (other.tag == "Paddle")
         {
             var paddle = other.GetComponent<Paddle>();
+            audioClip.Play();
 
             var diffInYValues = other.transform.position.y - transform.position.y;
             var maxDifference = radius + paddle.Height;
