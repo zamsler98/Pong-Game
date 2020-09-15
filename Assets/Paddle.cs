@@ -5,11 +5,14 @@ using UnityEngine;
 public class Paddle : MonoBehaviour
 {
     [SerializeField]
-    float speed;
+    float speed = 0;
     float height;
 
     string input;
     public bool isRight;
+
+    Sprite spriteL;
+    Sprite spriteR;
 
     public float Height
     {
@@ -73,12 +76,14 @@ public class Paddle : MonoBehaviour
             pos = new Vector2(GameManager.topRight.x, 0);
             pos -= Vector2.right * transform.localScale.x;
             input = "PaddleRight";
+            this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/alienShip");
         }
         else
         {
             pos = new Vector2(GameManager.bottomLeft.x, 0);
             pos += Vector2.right * transform.localScale.x;
             input = "PaddleLeft";
+            this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/spaceShip");
         }
 
         //Update this paddle's position
