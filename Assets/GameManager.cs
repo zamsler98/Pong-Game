@@ -24,21 +24,27 @@ public class GameManager : MonoBehaviour
         topRight = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
 
 
-        Instantiate(ball);
-        CreatePlayerOne();
-        CreatePlayerTwo();
-    }
-
-    private void CreatePlayerOne()
-    {
-        var player = Instantiate(paddle) as Paddle;
-        player.Init(false, new PlayerControl("PaddleLeft"));
-    }
-
-    private void CreatePlayerTwo()
-    {
-        var player = Instantiate(paddle) as Paddle;
-        player.Init(true, new PlayerControl("PaddleRight"));
+        var gameBall = Instantiate(ball) as Ball;
+        var leftPaddle = Instantiate(paddle) as Paddle;
+        leftPaddle.Init(false, new PlayerControl("PaddleLeft"));
+        var rightPaddle = Instantiate(paddle) as Paddle;
+        IPaddleControls controls = null;
+        switch (GameManager.GameType)
+        {
+            case GameType.MULTIPLAYER:
+                controls = new PlayerControl("PaddleRight");
+                break;
+            case GameType.EASY:
+                controls = new EasyAI(gameBall, rightPaddle);
+                break;
+            case GameType.MEDIUM:
+                controls = new MediumAI(gameBall, rightPaddle);
+                break;
+            case GameType.HARD:
+                controls = new HardAI(gameBall, rightPaddle);
+                break;
+        }
+        rightPaddle.Init(true, controls);
     }
 
     // Update is called once per frame

@@ -10,10 +10,28 @@ public class Ball : MonoBehaviour
 
 
     [SerializeField]
-    float speed;
+    public float speed;
 
-    float radius;
+    public float radius;
+    public Vector2 Direction
+    {
+        get
+        {
+            return direction;
+        }
+        set
+        {
+            direction = value;
+        }
+    }
     Vector2 direction;
+    public Vector3 Position
+    {
+        get
+        {
+            return transform.position;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -23,7 +41,7 @@ public class Ball : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
         transform.Translate(direction * speed * Time.deltaTime);
 
