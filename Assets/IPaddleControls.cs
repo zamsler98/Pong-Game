@@ -26,21 +26,43 @@ public class PlayerControl : IPaddleControls
     }
 }
 
-public class EasyAI : IPaddleControls
+public abstract class AI : IPaddleControls
 {
-    Ball ball;
-    Paddle paddle;
-    public EasyAI(Ball ball, Paddle paddle)
+    protected Ball ball;
+    protected Paddle paddle;
+    public AI(Ball ball, Paddle paddle)
     {
-        this.ball = ball;
         this.paddle = paddle;
+        this.ball = ball;
     }
 
-    public float GetDirection()
+    public abstract float GetDirection();
+
+    /// <summary>
+    /// Returns the direction to move the paddle towards the given y value
+    /// </summary>
+    /// <param name="y"></param>
+    /// <returns></returns>
+    protected float MoveTowardsPoint(float y)
+    {
+        if (Mathf.Abs(y - paddle.Position.y) <= paddle.Height / 20)
+        {
+            return 0;
+        }
+        return paddle.Position.y >= y ? -1 : 1;
+    }
+}
+
+public class EasyAI : AI
+{
+
+    public EasyAI(Ball ball, Paddle paddle) : base(ball, paddle) { }
+
+    public override float GetDirection()
     {
         if (BallMovingTowards())
         {
-            return paddle.Position.y > ball.Position.y ? -1 : 1;
+            return MoveTowardsPoint(ball.Position.y);
         }
         return 0;
     }
@@ -59,41 +81,31 @@ public class EasyAI : IPaddleControls
     }
 }
 
-public class MediumAI : IPaddleControls
+public class MediumAI : AI
 {
-    Ball ball;
-    Paddle paddle;
-    public MediumAI(Ball ball, Paddle paddle)
-    {
-        this.ball = ball;
-        this.paddle = paddle;
-    }
+    public MediumAI(Ball ball, Paddle paddle) : base(ball, paddle) { }
 
-    public float GetDirection()
+    public override float GetDirection()
     {
-        return paddle.Position.y > ball.Position.y ? -1 : 1;
+        return MoveTowardsPoint(ball.Position.y);
     }
 }
 
-public class HardAI : IPaddleControls
+public class HardAI : AI
 {
-    Ball ball;
-    Paddle paddle;
-    public HardAI(Ball ball, Paddle paddle)
-    {
-        this.ball = ball;
-        this.paddle = paddle;
-    }
 
-    public float GetDirection()
+    public HardAI(Ball ball, Paddle paddle) : base(ball, paddle) { }
+
+
+    public override float GetDirection()
     {
         if (BallMovingTowards())
         {
-            return paddle.Position.y >= CalculateTrajectory() ? -1 : 1;
+            return MoveTowardsPoint(CalculateTrajectory());
         }
         else
         {
-            return paddle.Position.y >= 0 ? -1 : 1;
+            return MoveTowardsPoint(0);
         }
     }
 
