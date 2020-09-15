@@ -25,10 +25,20 @@ public class GameManager : MonoBehaviour
 
 
         Instantiate(ball);
-        var paddle1 = Instantiate(paddle) as Paddle;
-        var paddle2 = Instantiate(paddle) as Paddle;
-        paddle1.Init(true); //Right paddle
-        paddle2.Init(false); //Left paddle
+        CreatePlayerOne();
+        CreatePlayerTwo();
+    }
+
+    private void CreatePlayerOne()
+    {
+        var player = Instantiate(paddle) as Paddle;
+        player.Init(false, new PlayerControl("PaddleLeft"));
+    }
+
+    private void CreatePlayerTwo()
+    {
+        var player = Instantiate(paddle) as Paddle;
+        player.Init(true, new PlayerControl("PaddleRight"));
     }
 
     // Update is called once per frame
