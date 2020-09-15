@@ -5,9 +5,19 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuScript : MonoBehaviour
 {
-    public void SinglePlayer()
+    public void EasyGame()
     {
         GameManager.StartGame(GameType.EASY);
+    }
+
+    public void MediumGame()
+    {
+        GameManager.StartGame(GameType.MEDIUM);
+    }
+
+    public void HardGame()
+    {
+        GameManager.StartGame(GameType.HARD);
     }
 
     public void MultiPlayer()

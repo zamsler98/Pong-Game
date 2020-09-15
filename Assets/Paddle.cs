@@ -8,8 +8,8 @@ public class Paddle : MonoBehaviour
     float speed = 0;
     float height;
 
-    string input;
     public bool isRight;
+    IPaddleControls controls;
 
     Sprite spriteL;
     Sprite spriteR;
@@ -26,6 +26,14 @@ public class Paddle : MonoBehaviour
         }
     }
 
+    public Vector2 Position
+    {
+        get
+        {
+            return transform.position;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,60 +43,40 @@ public class Paddle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var axis = Input.GetAxis(input);
-        if (axis > 0)
-        {
-            MoveUp();
-        }
-        else if (axis < 0)
-        {
-            MoveDown();
-        }
-    }
+        var axis = controls.GetDirection();
+        float move = axis * Time.deltaTime * speed;
 
-    public void MoveDown()
-    {
-        float move = -1 * Time.deltaTime * speed;
-
-        if (transform.position.y < GameManager.bottomLeft.y + height / 2 && move < 0)
+        if (move < 0 && transform.position.y < GameManager.bottomLeft.y + height / 2)
+        {
+            move = 0;
+        }
+        if (move > 0 && transform.position.y > GameManager.topRight.y - height / 2)
         {
             move = 0;
         }
         transform.Translate(move * Vector2.up);
     }
 
-    public void MoveUp()
+    public void Init(bool isPaddleRight, IPaddleControls controls)
     {
-        float move = Time.deltaTime * speed;
-        if (transform.position.y > GameManager.topRight.y - height / 2 && move > 0)
-        {
-            move = 0;
-        }
-        transform.Translate(move * Vector2.up);
-    }
-
-    public void Init(bool isPaddleRight)
-    {
+        this.controls = controls;
         Vector2 pos;
         isRight = isPaddleRight;
         if (isPaddleRight)
         {
             pos = new Vector2(GameManager.topRight.x, 0);
             pos -= Vector2.right * transform.localScale.x;
-            input = "PaddleRight";
             this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/alienShip");
+
         }
         else
         {
             pos = new Vector2(GameManager.bottomLeft.x, 0);
             pos += Vector2.right * transform.localScale.x;
-            input = "PaddleLeft";
             this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/spaceShip");
         }
 
         //Update this paddle's position
         transform.position = pos;
-
-        transform.name = input;
     }
 }
