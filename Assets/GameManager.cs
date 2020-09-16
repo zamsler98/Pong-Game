@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -11,6 +12,12 @@ public class GameManager : MonoBehaviour
     public static Vector2 bottomLeft;
     public static Vector2 topRight;
 
+    private Ball gameBall;
+    private Paddle leftPaddle;
+    private Paddle rightPaddle;
+
+    private DateTime startGameTime;
+
     public static void StartGame(GameType gameType)
     {
         GameType = gameType;
@@ -20,14 +27,15 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        startGameTime = DateTime.Now;
         bottomLeft = Camera.main.ScreenToWorldPoint(new Vector2(0, 0));
         topRight = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
 
 
-        var gameBall = Instantiate(ball) as Ball;
-        var leftPaddle = Instantiate(paddle) as Paddle;
+        gameBall = Instantiate(ball) as Ball;
+        leftPaddle = Instantiate(paddle) as Paddle;
         leftPaddle.Init(false, new PlayerControl("PaddleLeft"));
-        var rightPaddle = Instantiate(paddle) as Paddle;
+        rightPaddle = Instantiate(paddle) as Paddle;
         IPaddleControls controls = null;
         switch (GameManager.GameType)
         {
@@ -50,7 +58,8 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        var timeDiff = DateTime.Now - startGameTime;
+        gameBall.UpdateSpeed(timeDiff.TotalSeconds);
     }
 }
 

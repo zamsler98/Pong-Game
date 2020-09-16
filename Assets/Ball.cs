@@ -8,12 +8,13 @@ public class Ball : MonoBehaviour
 {
     private static readonly System.Random random = new System.Random();
     private static readonly double MaxAngleOfBounce = DegreesToRadians(75);
+
     public AudioSource audioClip;
 
+    private SpeedCalculator speedCalculator = new SpeedCalculator();
 
     [SerializeField]
-
-    public float speed;
+    public float speed = SpeedCalculator.StartingSpeed;
 
 
     public float radius;
@@ -106,5 +107,32 @@ public class Ball : MonoBehaviour
             direction = new Vector2(paddle.isRight ? -1 : 1, (float)-Math.Sin(bounceAngle));
             direction.Normalize();
         }
+    }
+
+    public void UpdateSpeed(double numSeconds)
+    {
+        speed = speedCalculator.CalculateSpeed(numSeconds);
+    }
+}
+
+public class SpeedCalculator
+{
+    public const int StartingSpeed = 5;
+    public const int TopSpeed = 20;
+    public const int SecondsToReachTopSpeed = 30;
+
+    private int a;
+    private double b;
+
+    public SpeedCalculator()
+    {
+        var closeToTopSpeed = TopSpeed * .99;
+        a = StartingSpeed - TopSpeed;
+        b = Math.Pow((closeToTopSpeed - TopSpeed) / a, (1.0 / SecondsToReachTopSpeed));
+    }
+
+    public float CalculateSpeed(double numSeconds)
+    {
+        return a * (float)Math.Pow(b, numSeconds) + TopSpeed;
     }
 }
