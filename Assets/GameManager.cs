@@ -40,7 +40,6 @@ public class GameManager : MonoBehaviour
         AudioManager.AudioSource = AudioSource;
         gameBall = Instantiate(ball) as Ball;
         gameBall.GameManager = this;
-        gameBall.CanMove = true;
         leftPaddle = Instantiate(paddle) as Paddle;
         leftPaddle.Init(false, new PlayerControl("PaddleLeft"));
         rightPaddle = Instantiate(paddle) as Paddle;
@@ -64,6 +63,16 @@ public class GameManager : MonoBehaviour
                 break;
         }
         rightPaddle.Init(true, controls);
+        leftPaddle.CanMove = false;
+        rightPaddle.CanMove = false;
+    }
+
+    public void StartGame()
+    {
+        startRoundTime = Time.time;
+        gameBall.CanMove = true;
+        leftPaddle.CanMove = true;
+        rightPaddle.CanMove = true;
     }
 
     // Update is called once per frame
@@ -74,7 +83,7 @@ public class GameManager : MonoBehaviour
         {
             if (delay.IsDone())
             {
-                if (delay.Type == DelayType.NEWROUND || delay.Type == DelayType.NEWGAME)
+                if (delay.Type == DelayType.NEWROUND)
                 {
                     startRoundTime = Time.time;
                 }
@@ -159,7 +168,6 @@ public enum DelayType
 {
     RESUME,
     NEWROUND,
-    NEWGAME,
     NONE
 }
 
@@ -188,13 +196,10 @@ public class Delay
         switch (type)
         {
             case DelayType.RESUME:
-                lengthOfDelay = .5f;
+                lengthOfDelay = .25f;
                 break;
             case DelayType.NEWROUND:
                 lengthOfDelay = 2;
-                break;
-            case DelayType.NEWGAME:
-                lengthOfDelay = 3;
                 break;
             case DelayType.NONE:
                 return;
