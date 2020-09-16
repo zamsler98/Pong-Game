@@ -7,13 +7,14 @@ public class CountdownController : MonoBehaviour
 {
     public int countdownTime;
     public Text countdownDisplay;
+    public GameManager GameManager;
 
     private void Start()
     {
         StartCoroutine(CountdownToStart());
     }
 
-    IEnumerator CountdownToStart() 
+    IEnumerator CountdownToStart()
     {
         while (countdownTime > 0)
         {
@@ -26,7 +27,7 @@ public class CountdownController : MonoBehaviour
 
         countdownDisplay.text = "GO!";
 
-        //start game
+        GameManager.StartGame();
 
         yield return new WaitForSeconds(1f);
 
