@@ -34,8 +34,6 @@ public class ScoreBoard : MonoBehaviour
         Dots = new Image[] { Dot1, Dot2, Dot3, Dot4, Dot5, Dot6 };
     }
 
-
-
     public void UpdateScoreDots()
     {
         for (var i = 0; i < LeftScore; i++)
@@ -87,23 +85,26 @@ public class ScoreBoard : MonoBehaviour
 
     public bool IsEndGame()
     {
-        if (LeftScore == 3 || RightScore == 3)
+        return LeftScore == 3 || RightScore == 3;
+    }
+
+    public void EndGame()
+    {
+        if (LeftScore == 3)
         {
-            if (LeftScore == 3)
-            {
-                NumberLeftWins++;
-            }
-            else
-            {
-                NumberRightWins++;
-            }
-            UpdateWins();
-            LeftScore = 0;
-            RightScore = 0;
-            UpdateScoreDots();
-            return true;
+            NumberLeftWins++;
         }
-        return false;
+        else
+        {
+            NumberRightWins++;
+        }
+        UpdateWins();
+        LeftScore = 0;
+        RightScore = 0;
+        UpdateScoreDots();
+        NumSeconds = 0;
+        NumMinutes = 0;
+        SetTimer();
     }
 
     public void SetTimer()
@@ -129,7 +130,6 @@ public class ScoreBoard : MonoBehaviour
 
     private void Update()
     {
-        print(NumSeconds);
         if (StartTime != 0)
         {
             NumSeconds += Time.time - StartTime;

@@ -112,7 +112,10 @@ public class GameManager : MonoBehaviour
     public void Point(bool isRight)
     {
         ScoreBoard.Point(isRight);
-        ScoreBoard.IsEndGame();
+        if (ScoreBoard.IsEndGame())
+        {
+            ScoreBoard.EndGame();
+        }
         NewRound();
     }
 
