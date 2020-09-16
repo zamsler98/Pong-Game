@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -52,6 +53,16 @@ public class GameManager : MonoBehaviour
     {
 
     }
+}
+
+public class GameData
+{
+    public GameType GameType { get; set; }
+    public bool Complete { get; set; }
+    public int NumOfSeconds { get; set; }
+    public int NumPaddleHits { get; set; }
+    public int NumPowerUps { get; set; }
+    public bool Win { get; set; }
 }
 
 public enum GameType
