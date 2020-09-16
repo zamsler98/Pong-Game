@@ -59,7 +59,6 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         var timeDiff = Time.time - startGameTime;
-        print(timeDiff);
         gameBall.UpdateSpeed(timeDiff);
     }
 }
