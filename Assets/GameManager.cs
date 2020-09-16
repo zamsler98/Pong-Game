@@ -17,9 +17,9 @@ public class GameManager : MonoBehaviour
     private Paddle leftPaddle;
     private Paddle rightPaddle;
 
-    private float startRoundTime;
-    private float newRoundTime;
+    private Delay delay = new Delay();
 
+    private float startRoundTime;
 
     private int leftScore = 0;
     private int rightScore = 0;
@@ -69,17 +69,23 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (newRoundTime > 0)
+
+        if (delay.IsDelayed)
         {
-            //1 second timer at new round
-            var timer = Time.time - newRoundTime;
-            if (timer >= 2)
+            if (delay.IsDone())
             {
-                newRoundTime = 0;
+                if (delay.Type == DelayType.NEWROUND || delay.Type == DelayType.NEWGAME)
+                {
+                    startRoundTime = Time.time;
+                }
                 gameBall.CanMove = true;
                 leftPaddle.CanMove = true;
                 rightPaddle.CanMove = true;
-                startRoundTime = Time.time;
+                delay.Stop();
+            }
+            else
+            {
+                return;
             }
         }
 
@@ -93,8 +99,6 @@ public class GameManager : MonoBehaviour
     /// <param name="isRight"></param>
     public void Point(bool isRight)
     {
-        Destroy(gameBall.gameObject);
-
         if (isRight)
         {
             leftScore++;
@@ -106,12 +110,12 @@ public class GameManager : MonoBehaviour
         print($"Left score: {leftScore}");
         print($"Right score: {rightScore}");
 
-
         NewRound();
     }
 
     public void NewRound()
     {
+        Destroy(gameBall.gameObject);
         gameBall = Instantiate(ball) as Ball;
         gameBall.GameManager = this;
 
@@ -123,11 +127,23 @@ public class GameManager : MonoBehaviour
         leftPaddle.ResetToMiddle();
         rightPaddle.ResetToMiddle();
 
+        StartDelay(DelayType.NEWROUND);
+    }
+
+    public void StartResumeDelay()
+    {
+        if (!delay.IsDelayed)
+        {
+            StartDelay(DelayType.RESUME);
+        }
+    }
+
+    public void StartDelay(DelayType type)
+    {
         leftPaddle.CanMove = false;
         rightPaddle.CanMove = false;
-
-        newRoundTime = Time.time;
-
+        gameBall.CanMove = false;
+        delay.Start(type);
     }
 }
 
@@ -137,4 +153,67 @@ public enum GameType
     MEDIUM,
     HARD,
     MULTIPLAYER
+}
+
+public enum DelayType
+{
+    RESUME,
+    NEWROUND,
+    NEWGAME,
+    NONE
+}
+
+public class Delay
+{
+    private float startOfDelay;
+    private float lengthOfDelay;
+    public DelayType Type { get; private set; }
+
+    public bool IsDelayed
+    {
+        get
+        {
+            return Type != DelayType.NONE;
+        }
+    }
+
+    public Delay()
+    {
+        Type = DelayType.NONE;
+    }
+
+    public void Start(DelayType type)
+    {
+        this.Type = type;
+        switch (type)
+        {
+            case DelayType.RESUME:
+                lengthOfDelay = .5f;
+                break;
+            case DelayType.NEWROUND:
+                lengthOfDelay = 2;
+                break;
+            case DelayType.NEWGAME:
+                lengthOfDelay = 3;
+                break;
+            case DelayType.NONE:
+                return;
+        }
+        startOfDelay = Time.time;
+    }
+
+    public void Stop()
+    {
+        Type = DelayType.NONE;
+    }
+
+    public bool IsDone()
+    {
+        if (Type != DelayType.NONE)
+        {
+            var timeDiff = Time.time - startOfDelay;
+            return timeDiff >= lengthOfDelay;
+        }
+        return false;
+    }
 }
