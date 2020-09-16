@@ -44,12 +44,15 @@ public class GameManager : MonoBehaviour
                 break;
             case GameType.EASY:
                 controls = new EasyAI(gameBall, rightPaddle);
+                rightPaddle.speed = 4;
                 break;
             case GameType.MEDIUM:
                 controls = new MediumAI(gameBall, rightPaddle);
+                rightPaddle.speed = 5;
                 break;
             case GameType.HARD:
                 controls = new HardAI(gameBall, rightPaddle);
+                rightPaddle.speed = 7;
                 break;
         }
         rightPaddle.Init(true, controls);

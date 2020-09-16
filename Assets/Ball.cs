@@ -114,8 +114,8 @@ public class Ball : MonoBehaviour
 public class SpeedCalculator
 {
     public const int StartingSpeed = 5;
-    public const int TopSpeed = 20;
-    public const int SecondsToReachTopSpeed = 30;
+    public const int TopSpeed = 25;
+    public const int SecondsToReachTopSpeed = 45;
 
     private int a;
     private double b;

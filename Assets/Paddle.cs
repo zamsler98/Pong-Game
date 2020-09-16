@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class Paddle : MonoBehaviour
 {
-    [SerializeField]
-    float speed = 0;
+    public float speed = 10;
     float height;
 
     public bool isRight;
