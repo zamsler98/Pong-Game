@@ -16,7 +16,10 @@ public class GameManager : MonoBehaviour
     private Paddle leftPaddle;
     private Paddle rightPaddle;
 
-    private float startGameTime;
+    private float startRoundTime;
+
+    private int leftScore = 0;
+    private int rightScore = 0;
 
     public static void StartGame(GameType gameType)
     {
@@ -27,12 +30,13 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        startGameTime = Time.time;
+        startRoundTime = Time.time;
         bottomLeft = Camera.main.ScreenToWorldPoint(new Vector2(0, 0));
         topRight = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
 
 
         gameBall = Instantiate(ball) as Ball;
+        gameBall.GameManager = this;
         leftPaddle = Instantiate(paddle) as Paddle;
         leftPaddle.Init(false, new PlayerControl("PaddleLeft"));
         rightPaddle = Instantiate(paddle) as Paddle;
@@ -61,8 +65,37 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var timeDiff = Time.time - startGameTime;
+        var timeDiff = Time.time - startRoundTime;
         gameBall.UpdateSpeed(timeDiff);
+    }
+
+    /// <summary>
+    /// Scores a point for
+    /// </summary>
+    /// <param name="isRight"></param>
+    public void Point(bool isRight)
+    {
+        Destroy(gameBall.gameObject);
+
+        if (isRight)
+        {
+            leftScore++;
+        }
+        else
+        {
+            rightScore++;
+        }
+        print($"Left score: {leftScore}");
+        print($"Right score: {rightScore}");
+        gameBall = Instantiate(ball) as Ball;
+        gameBall.GameManager = this;
+
+        if (rightPaddle.controls is AI)
+        {
+            ((AI)rightPaddle.controls).Ball = gameBall;
+        }
+
+        startRoundTime = Time.time;
     }
 }
 

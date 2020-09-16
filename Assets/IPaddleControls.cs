@@ -28,12 +28,12 @@ public class PlayerControl : IPaddleControls
 
 public abstract class AI : IPaddleControls
 {
-    protected Ball ball;
+    public Ball Ball { get; set; }
     protected Paddle paddle;
     public AI(Ball ball, Paddle paddle)
     {
         this.paddle = paddle;
-        this.ball = ball;
+        this.Ball = ball;
     }
 
     public abstract float GetDirection();
@@ -62,7 +62,7 @@ public class EasyAI : AI
     {
         if (BallMovingTowards())
         {
-            return MoveTowardsPoint(ball.Position.y);
+            return MoveTowardsPoint(Ball.Position.y);
         }
         return 0;
     }
@@ -75,9 +75,9 @@ public class EasyAI : AI
     {
         if (paddle.isRight)
         {
-            return ball.Position.x >= 0 && ball.Direction.x >= 0;
+            return Ball.Position.x >= 0 && Ball.Direction.x >= 0;
         }
-        return ball.Position.x <= 0 / 2 && ball.Direction.x <= 0;
+        return Ball.Position.x <= 0 / 2 && Ball.Direction.x <= 0;
     }
 }
 
@@ -87,7 +87,7 @@ public class MediumAI : AI
 
     public override float GetDirection()
     {
-        return MoveTowardsPoint(ball.Position.y);
+        return MoveTowardsPoint(Ball.Position.y);
     }
 }
 
@@ -111,10 +111,10 @@ public class HardAI : AI
 
     private float CalculateTrajectory()
     {
-        var fakeBallPosition = new Vector3(ball.Position.x, ball.Position.y, ball.Position.z);
-        var fakeBallSpeed = ball.speed;
-        var fakeBallRadius = ball.radius;
-        var fakeBallDirection = new Vector3(ball.Direction.x, ball.Direction.y, 0);
+        var fakeBallPosition = new Vector3(Ball.Position.x, Ball.Position.y, Ball.Position.z);
+        var fakeBallSpeed = Ball.speed;
+        var fakeBallRadius = Ball.radius;
+        var fakeBallDirection = new Vector3(Ball.Direction.x, Ball.Direction.y, 0);
 
         //Only works for right paddle
         while (fakeBallPosition.x <= paddle.Position.x)
@@ -140,8 +140,8 @@ public class HardAI : AI
     {
         if (paddle.isRight)
         {
-            return ball.Direction.x >= 0;
+            return Ball.Direction.x >= 0;
         }
-        return ball.Direction.x <= 0;
+        return Ball.Direction.x <= 0;
     }
 }

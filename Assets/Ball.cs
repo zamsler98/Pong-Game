@@ -38,6 +38,9 @@ public class Ball : MonoBehaviour
         }
     }
 
+    public GameManager GameManager { get; set; }
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -69,24 +72,18 @@ public class Ball : MonoBehaviour
             direction.y = -direction.y;
         }
 
-        // Game over
         if (transform.position.x < GameManager.bottomLeft.x + radius && direction.x < 0)
         {
-            Debug.Log("Right player wins");
-
             clip = Resources.Load<AudioClip>("Sounds/game-over");
             audioClip.PlayOneShot(clip);
-            Time.timeScale = 0;
-            enabled = false;
+            GameManager.Point(false);
+
         }
         if (transform.position.x > GameManager.topRight.x - radius && direction.x > 0)
         {
-            Debug.Log("Left player wins");
-
             clip = Resources.Load<AudioClip>("Sounds/game-over-arcade");
             audioClip.PlayOneShot(clip);
-            Time.timeScale = 0;
-            enabled = false;
+            GameManager.Point(true);
         }
     }
     void OnTriggerEnter2D(Collider2D other)

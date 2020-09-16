@@ -8,7 +8,7 @@ public class Paddle : MonoBehaviour
     float height;
 
     public bool isRight;
-    IPaddleControls controls;
+    public IPaddleControls controls;
 
     Sprite sprite;
 
