@@ -23,11 +23,18 @@ public class ScoreBoard : MonoBehaviour
     public int NumberLeftWins { get; private set; } = 0;
     public int NumberRightWins { get; private set; } = 0;
 
+    public float NumSeconds { get; private set; } = 0;
+    public int NumMinutes { get; private set; } = 0;
+    public float StartTime { get; private set; }
+
+
 
     private void Start()
     {
         Dots = new Image[] { Dot1, Dot2, Dot3, Dot4, Dot5, Dot6 };
     }
+
+
 
     public void UpdateScoreDots()
     {
@@ -97,5 +104,37 @@ public class ScoreBoard : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void SetTimer()
+    {
+        if (NumSeconds >= 60)
+        {
+            NumSeconds = 0;
+            NumMinutes++;
+        }
+        var seconds = (int)NumSeconds;
+        Timer.text = $"{NumMinutes:D2}:{seconds:D2}";
+    }
+
+    public void StartTimer()
+    {
+        StartTime = Time.time;
+    }
+
+    public void PauseTimer()
+    {
+        StartTime = 0;
+    }
+
+    private void Update()
+    {
+        print(NumSeconds);
+        if (StartTime != 0)
+        {
+            NumSeconds += Time.time - StartTime;
+            StartTime = Time.time;
+            SetTimer();
+        }
     }
 }

@@ -74,6 +74,7 @@ public class GameManager : MonoBehaviour
         gameBall.CanMove = true;
         leftPaddle.CanMove = true;
         rightPaddle.CanMove = true;
+        ScoreBoard.StartTimer();
     }
 
     // Update is called once per frame
@@ -92,6 +93,7 @@ public class GameManager : MonoBehaviour
                 leftPaddle.CanMove = true;
                 rightPaddle.CanMove = true;
                 delay.Stop();
+                ScoreBoard.StartTimer();
             }
             else
             {
@@ -141,6 +143,7 @@ public class GameManager : MonoBehaviour
 
     public void StartDelay(DelayType type)
     {
+        ScoreBoard.PauseTimer();
         leftPaddle.CanMove = false;
         rightPaddle.CanMove = false;
         gameBall.CanMove = false;
