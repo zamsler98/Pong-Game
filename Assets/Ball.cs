@@ -60,15 +60,11 @@ public class Ball : MonoBehaviour
 
         if (transform.position.y < GameManager.bottomLeft.y + radius && direction.y < 0)
         {
-            Debug.Log("Bottom");
-
             audioClip.PlayOneShot(clip);
             direction.y = -direction.y;
         }
         if (transform.position.y > GameManager.topRight.y - radius && direction.y > 0)
         {
-            Debug.Log("Top");
-
             audioClip.PlayOneShot(clip);
             direction.y = -direction.y;
         }

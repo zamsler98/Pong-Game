@@ -11,8 +11,7 @@ public class Paddle : MonoBehaviour
     public bool isRight;
     IPaddleControls controls;
 
-    Sprite spriteL;
-    Sprite spriteR;
+    Sprite sprite;
 
     public float Height
     {
@@ -37,7 +36,6 @@ public class Paddle : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        height = transform.localScale.y;
     }
 
     // Update is called once per frame
@@ -62,19 +60,23 @@ public class Paddle : MonoBehaviour
         this.controls = controls;
         Vector2 pos;
         isRight = isPaddleRight;
+
         if (isPaddleRight)
         {
             pos = new Vector2(GameManager.topRight.x, 0);
             pos -= Vector2.right * transform.localScale.x;
-            this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/alienShip");
-
+            sprite = this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/alienShip");
         }
         else
         {
             pos = new Vector2(GameManager.bottomLeft.x, 0);
             pos += Vector2.right * transform.localScale.x;
-            this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/spaceShip");
+            sprite = this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/spaceShip");
         }
+        var collider = this.GetComponent<BoxCollider2D>();
+        collider.size = sprite.bounds.size;
+        collider.offset = sprite.bounds.center;
+        height = collider.size.y;
 
         //Update this paddle's position
         transform.position = pos;
