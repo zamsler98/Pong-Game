@@ -9,6 +9,7 @@ public class Paddle : MonoBehaviour
 
     public bool isRight;
     public IPaddleControls controls;
+    public bool CanMove { get; set; } = true;
 
     Sprite sprite;
 
@@ -40,18 +41,21 @@ public class Paddle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var axis = controls.GetDirection();
-        float move = axis * Time.deltaTime * speed;
+        if (CanMove)
+        {
+            var axis = controls.GetDirection();
+            float move = axis * Time.deltaTime * speed;
 
-        if (move < 0 && transform.position.y < GameManager.bottomLeft.y + height / 2)
-        {
-            move = 0;
+            if (move < 0 && transform.position.y < GameManager.bottomLeft.y + height / 2)
+            {
+                move = 0;
+            }
+            if (move > 0 && transform.position.y > GameManager.topRight.y - height / 2)
+            {
+                move = 0;
+            }
+            transform.Translate(move * Vector2.up);
         }
-        if (move > 0 && transform.position.y > GameManager.topRight.y - height / 2)
-        {
-            move = 0;
-        }
-        transform.Translate(move * Vector2.up);
     }
 
     public void Init(bool isPaddleRight, IPaddleControls controls)
@@ -79,5 +83,19 @@ public class Paddle : MonoBehaviour
 
         //Update this paddle's position
         transform.position = pos;
+    }
+
+    public void ResetToMiddle()
+    {
+        if (isRight)
+        {
+            transform.position = new Vector2(GameManager.topRight.x, 0);
+            transform.position -= Vector3.right * transform.localScale.x;
+        }
+        else
+        {
+            transform.position = new Vector2(GameManager.bottomLeft.x, 0);
+            transform.position += Vector3.right * transform.localScale.x;
+        }
     }
 }

@@ -9,13 +9,14 @@ public class Ball : MonoBehaviour
     private static readonly System.Random random = new System.Random();
     private static readonly double MaxAngleOfBounce = DegreesToRadians(75);
 
-    public AudioSource audioClip;
+
 
     private SpeedCalculator speedCalculator = new SpeedCalculator();
 
     [SerializeField]
     public float speed = SpeedCalculator.StartingSpeed;
 
+    public bool CanMove { get; set; } = false;
 
     public float radius;
     public Vector2 Direction
@@ -58,32 +59,32 @@ public class Ball : MonoBehaviour
     // Update is called once per frame
     public void Update()
     {
-        transform.Translate(direction * speed * Time.deltaTime);
-        var clip = Resources.Load<AudioClip>("Sounds/force-field-impact");
+        if (CanMove)
+        {
+            transform.Translate(direction * speed * Time.deltaTime);
 
-        if (transform.position.y < GameManager.bottomLeft.y + radius && direction.y < 0)
-        {
-            audioClip.PlayOneShot(clip);
-            direction.y = -direction.y;
-        }
-        if (transform.position.y > GameManager.topRight.y - radius && direction.y > 0)
-        {
-            audioClip.PlayOneShot(clip);
-            direction.y = -direction.y;
-        }
+            if (transform.position.y < GameManager.bottomLeft.y + radius && direction.y < 0)
+            {
+                AudioManager.PlayWallHit();
+                direction.y = -direction.y;
+            }
+            if (transform.position.y > GameManager.topRight.y - radius && direction.y > 0)
+            {
+                AudioManager.PlayWallHit();
+                direction.y = -direction.y;
+            }
 
-        if (transform.position.x < GameManager.bottomLeft.x + radius && direction.x < 0)
-        {
-            clip = Resources.Load<AudioClip>("Sounds/game-over");
-            audioClip.PlayOneShot(clip);
-            GameManager.Point(false);
+            if (transform.position.x < GameManager.bottomLeft.x + radius && direction.x < 0)
+            {
+                AudioManager.PlayGameOverLeft();
+                GameManager.Point(false);
 
-        }
-        if (transform.position.x > GameManager.topRight.x - radius && direction.x > 0)
-        {
-            clip = Resources.Load<AudioClip>("Sounds/game-over-arcade");
-            audioClip.PlayOneShot(clip);
-            GameManager.Point(true);
+            }
+            if (transform.position.x > GameManager.topRight.x - radius && direction.x > 0)
+            {
+                AudioManager.PlayGameOverRight();
+                GameManager.Point(true);
+            }
         }
     }
     void OnTriggerEnter2D(Collider2D other)
@@ -91,7 +92,7 @@ public class Ball : MonoBehaviour
         if (other.tag == "Paddle")
         {
             var paddle = other.GetComponent<Paddle>();
-            audioClip.Play();
+            AudioManager.PlayPaddleHit();
 
             var diffInYValues = other.transform.position.y - transform.position.y;
             var maxDifference = radius + paddle.Height;

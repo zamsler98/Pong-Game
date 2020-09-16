@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     public Ball ball;
     public Paddle paddle;
+    public AudioSource AudioSource;
 
     public static Vector2 bottomLeft;
     public static Vector2 topRight;
@@ -17,6 +18,8 @@ public class GameManager : MonoBehaviour
     private Paddle rightPaddle;
 
     private float startRoundTime;
+    private float newRoundTime;
+
 
     private int leftScore = 0;
     private int rightScore = 0;
@@ -34,9 +37,10 @@ public class GameManager : MonoBehaviour
         bottomLeft = Camera.main.ScreenToWorldPoint(new Vector2(0, 0));
         topRight = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
 
-
+        AudioManager.AudioSource = AudioSource;
         gameBall = Instantiate(ball) as Ball;
         gameBall.GameManager = this;
+        gameBall.CanMove = true;
         leftPaddle = Instantiate(paddle) as Paddle;
         leftPaddle.Init(false, new PlayerControl("PaddleLeft"));
         rightPaddle = Instantiate(paddle) as Paddle;
@@ -65,6 +69,20 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (newRoundTime > 0)
+        {
+            //1 second timer at new round
+            var timer = Time.time - newRoundTime;
+            if (timer >= 2)
+            {
+                newRoundTime = 0;
+                gameBall.CanMove = true;
+                leftPaddle.CanMove = true;
+                rightPaddle.CanMove = true;
+                startRoundTime = Time.time;
+            }
+        }
+
         var timeDiff = Time.time - startRoundTime;
         gameBall.UpdateSpeed(timeDiff);
     }
@@ -87,6 +105,13 @@ public class GameManager : MonoBehaviour
         }
         print($"Left score: {leftScore}");
         print($"Right score: {rightScore}");
+
+
+        NewRound();
+    }
+
+    public void NewRound()
+    {
         gameBall = Instantiate(ball) as Ball;
         gameBall.GameManager = this;
 
@@ -95,7 +120,14 @@ public class GameManager : MonoBehaviour
             ((AI)rightPaddle.controls).Ball = gameBall;
         }
 
-        startRoundTime = Time.time;
+        leftPaddle.ResetToMiddle();
+        rightPaddle.ResetToMiddle();
+
+        leftPaddle.CanMove = false;
+        rightPaddle.CanMove = false;
+
+        newRoundTime = Time.time;
+
     }
 }
 
