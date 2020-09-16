@@ -6,6 +6,7 @@ using static Helpers;
 
 public class Ball : MonoBehaviour
 {
+    private static readonly System.Random random = new System.Random();
     private static readonly double MaxAngleOfBounce = DegreesToRadians(75);
     public AudioSource audioClip;
 
@@ -39,8 +40,15 @@ public class Ball : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        direction = Vector2.one.normalized;
+        var randDirection = new int[] { -1, 1 }[random.Next(2)];
+        direction = GetRandomAngleInDirection(randDirection);
         radius = transform.localScale.x / 2;
+    }
+
+    private Vector2 GetRandomAngleInDirection(int direction)
+    {
+        var randomFloat = (float)(random.NextDouble() * 2 - 1);
+        return new Vector2(direction, randomFloat).normalized;
     }
 
     // Update is called once per frame
@@ -52,14 +60,14 @@ public class Ball : MonoBehaviour
         if (transform.position.y < GameManager.bottomLeft.y + radius && direction.y < 0)
         {
             Debug.Log("Bottom");
-            
+
             audioClip.PlayOneShot(clip);
             direction.y = -direction.y;
         }
         if (transform.position.y > GameManager.topRight.y - radius && direction.y > 0)
         {
             Debug.Log("Top");
-            
+
             audioClip.PlayOneShot(clip);
             direction.y = -direction.y;
         }
