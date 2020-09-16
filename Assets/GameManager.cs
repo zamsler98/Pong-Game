@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     private Paddle leftPaddle;
     private Paddle rightPaddle;
 
-    private DateTime startGameTime;
+    private float startGameTime;
 
     public static void StartGame(GameType gameType)
     {
@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        startGameTime = DateTime.Now;
+        startGameTime = Time.time;
         bottomLeft = Camera.main.ScreenToWorldPoint(new Vector2(0, 0));
         topRight = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
 
@@ -58,8 +58,9 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var timeDiff = DateTime.Now - startGameTime;
-        gameBall.UpdateSpeed(timeDiff.TotalSeconds);
+        var timeDiff = Time.time - startGameTime;
+        print(timeDiff);
+        gameBall.UpdateSpeed(timeDiff);
     }
 }
 
