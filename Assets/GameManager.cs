@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public Ball ball;
     public Paddle paddle;
     public AudioSource AudioSource;
+    public ScoreBoard ScoreBoard;
 
     public static Vector2 bottomLeft;
     public static Vector2 topRight;
@@ -108,17 +109,8 @@ public class GameManager : MonoBehaviour
     /// <param name="isRight"></param>
     public void Point(bool isRight)
     {
-        if (isRight)
-        {
-            leftScore++;
-        }
-        else
-        {
-            rightScore++;
-        }
-        print($"Left score: {leftScore}");
-        print($"Right score: {rightScore}");
-
+        ScoreBoard.Point(isRight);
+        ScoreBoard.IsEndGame();
         NewRound();
     }
 
