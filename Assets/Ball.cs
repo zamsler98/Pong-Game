@@ -92,6 +92,12 @@ public class Ball : MonoBehaviour
         if (other.tag == "Paddle")
         {
             var paddle = other.GetComponent<Paddle>();
+
+            if (!paddle.isRight)
+            {
+                GameManager.PaddleHit();
+            }
+
             AudioManager.PlayPaddleHit();
 
             var diffInYValues = other.transform.position.y - transform.position.y;
