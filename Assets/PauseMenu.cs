@@ -44,6 +44,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Restart()
     {
+        GameManager.SaveGame();
         //Start the game with the same game type we currently have
         GameManager.StartGame(GameManager.GameType);
         Resume();
@@ -51,6 +52,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Quit()
     {
+        GameManager.SaveGame();
         SceneManager.LoadScene("Main Menu");
         Resume();
     }

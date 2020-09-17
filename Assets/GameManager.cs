@@ -18,12 +18,11 @@ public class GameManager : MonoBehaviour
     private Paddle leftPaddle;
     private Paddle rightPaddle;
 
+    private GameData GameData;
+
     private Delay delay = new Delay();
 
     private float startRoundTime;
-
-    private int leftScore = 0;
-    private int rightScore = 0;
 
     public static void StartGame(GameType gameType)
     {
@@ -66,6 +65,8 @@ public class GameManager : MonoBehaviour
         rightPaddle.Init(true, controls);
         leftPaddle.CanMove = false;
         rightPaddle.CanMove = false;
+
+        NewGameData();
     }
 
     public void StartGame()
@@ -105,6 +106,15 @@ public class GameManager : MonoBehaviour
         gameBall.UpdateSpeed(timeDiff);
     }
 
+    private void NewGameData()
+    {
+        GameData = new GameData()
+        {
+            GameType = GameType,
+            Complete = false,
+        };
+    }
+
     /// <summary>
     /// Scores a point for
     /// </summary>
@@ -114,6 +124,14 @@ public class GameManager : MonoBehaviour
         ScoreBoard.Point(isRight);
         if (ScoreBoard.IsEndGame())
         {
+            GameData.Complete = true;
+            GameData.NumOfSeconds = (int)ScoreBoard.NumSeconds + ScoreBoard.NumMinutes * 60;
+            if (ScoreBoard.LeftScore == 3)
+            {
+                GameData.Win = true;
+            }
+            DataAccess.SaveGameData(GameData);
+            NewGameData();
             ScoreBoard.EndGame();
         }
         NewRound();
@@ -151,6 +169,18 @@ public class GameManager : MonoBehaviour
         rightPaddle.CanMove = false;
         gameBall.CanMove = false;
         delay.Start(type);
+    }
+
+    public void PaddleHit()
+    {
+        GameData.NumPaddleHits++;
+    }
+
+    public void SaveGame()
+    {
+        GameData.NumOfSeconds = (int)ScoreBoard.NumSeconds + ScoreBoard.NumMinutes * 60;
+        DataAccess.SaveGameData(GameData);
+        NewGameData();
     }
 }
 

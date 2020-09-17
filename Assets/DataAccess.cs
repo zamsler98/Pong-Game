@@ -41,4 +41,47 @@ public class DataAccess
         command.Parameters.Add(new SqliteParameter("@win", gameData.Win ? 1 : 0));
         command.ExecuteNonQuery();
     }
+
+    public static long GetTotalHits()
+    {
+        var command = dbConnection.CreateCommand();
+        command.CommandText = "SELECT COALESCE(SUM(numhits),0) FROM GAMES";
+        var res = command.ExecuteScalar().GetType();
+        return (long)command.ExecuteScalar();
+    }
+
+    public static long GetWins()
+    {
+        var command = dbConnection.CreateCommand();
+        command.CommandText = "SELECT COALESCE(SUM(win),0) FROM GAMES WHERE complete = 1";
+        return (long)command.ExecuteScalar();
+    }
+
+    public static long GetLosses()
+    {
+        var command = dbConnection.CreateCommand();
+        command.CommandText = "SELECT COUNT(*) FROM GAMES WHERE win=0 AND complete = 1";
+        return (long)command.ExecuteScalar();
+    }
+
+    public static long GetPowerUps()
+    {
+        var command = dbConnection.CreateCommand();
+        command.CommandText = "SELECT COALESCE(SUM(numpowerups),0) FROM GAMES";
+        return (long)command.ExecuteScalar();
+    }
+
+    public static long GetTotalSeconds()
+    {
+        var command = dbConnection.CreateCommand();
+        command.CommandText = "SELECT COALESCE(SUM(time),0) FROM GAMES";
+        return (long)command.ExecuteScalar();
+    }
+
+    public static void Clear()
+    {
+        var command = dbConnection.CreateCommand();
+        command.CommandText = "DELETE FROM GAMES";
+        command.ExecuteNonQuery();
+    }
 }
