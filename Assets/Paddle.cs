@@ -98,4 +98,19 @@ public class Paddle : MonoBehaviour
             transform.position += Vector3.right * transform.localScale.x;
         }
     }
+
+    public void Shrink()
+    {
+        transform.localScale -= new Vector3(.5f, .5f, 0);
+    }
+
+    public void NormalSize()
+    {
+        transform.localScale = new Vector3(1, 1, 1);
+    }
+
+    public void Grow()
+    {
+        transform.localScale = new Vector3(1.5f, 1.5f, 0);
+    }
 }

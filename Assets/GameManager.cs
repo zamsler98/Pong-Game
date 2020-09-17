@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,6 +11,7 @@ public class GameManager : MonoBehaviour
     public Paddle paddle;
     public AudioSource AudioSource;
     public ScoreBoard ScoreBoard;
+    public PowerUp PowerUp;
 
     public static Vector2 bottomLeft;
     public static Vector2 topRight;
@@ -22,7 +24,7 @@ public class GameManager : MonoBehaviour
 
     private Delay delay = new Delay();
 
-    private float startRoundTime;
+    public float prevTime = 0;
 
     public static void StartGame(GameType gameType)
     {
@@ -33,7 +35,6 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        startRoundTime = Time.time;
         bottomLeft = Camera.main.ScreenToWorldPoint(new Vector2(0, 0));
         topRight = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
 
@@ -71,11 +72,53 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        startRoundTime = Time.time;
+        prevTime = Time.time;
         gameBall.CanMove = true;
         leftPaddle.CanMove = true;
         rightPaddle.CanMove = true;
         ScoreBoard.StartTimer();
+        StartCoroutine(CreatePowerUps());
+    }
+
+    IEnumerator CreatePowerUps()
+    {
+        var random = new System.Random();
+        int randNum;
+        while (Application.isPlaying)
+        {
+            if (!delay.IsDelayed)
+            {
+                randNum = random.Next(5);
+                if (randNum == 0)
+                {
+                    print("Creating powerup");
+                    var powerUp = Instantiate(PowerUp);
+                    randNum = random.Next(5);
+                    Ability ability = null;
+                    switch (randNum)
+                    {
+                        case 0:
+                            ability = new SpeedUp(gameBall, this);
+                            break;
+                        case 1:
+                            ability = new SlowDown(gameBall, this);
+                            break;
+                        case 2:
+                            ability = new Grow(leftPaddle, rightPaddle, gameBall);
+                            break;
+                        case 3:
+                            ability = new Shrink(leftPaddle, rightPaddle, gameBall);
+                            break;
+                        case 4:
+                            ability = new ChangeDirection(gameBall);
+                            break;
+                    }
+                    var position = new Vector3((float)random.NextDouble() * 6 - 3, (float)random.NextDouble() * 6 - 3, 0);
+                    powerUp.Init(ability, position);
+                }
+            }
+            yield return new WaitForSeconds(1f);
+        }
     }
 
     // Update is called once per frame
@@ -88,7 +131,7 @@ public class GameManager : MonoBehaviour
             {
                 if (delay.Type == DelayType.NEWROUND)
                 {
-                    startRoundTime = Time.time;
+                    prevTime = Time.time;
                 }
                 gameBall.CanMove = true;
                 leftPaddle.CanMove = true;
@@ -102,8 +145,12 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        var timeDiff = Time.time - startRoundTime;
-        gameBall.UpdateSpeed(timeDiff);
+        if (prevTime != 0)
+        {
+            var timeDiff = Time.time - prevTime;
+            gameBall.AddToElapsed(timeDiff);
+            prevTime = Time.time;
+        }
     }
 
     private void NewGameData()

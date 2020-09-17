@@ -2164,6 +2164,8 @@ MonoBehaviour:
   paddle: {fileID: 4296653979723539228, guid: 67e7a5fc988fa1a42801ceeb09d8927d, type: 3}
   AudioSource: {fileID: 1406862854}
   ScoreBoard: {fileID: 1300989347}
+  PowerUp: {fileID: 7408809314736801113, guid: 487126854b4d35245983ee4260a2d501, type: 3}
+  prevTime: 0
 --- !u!222 &1406862852
 CanvasRenderer:
   m_ObjectHideFlags: 0

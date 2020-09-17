@@ -12,6 +12,8 @@ public class Ball : MonoBehaviour
 
 
     private SpeedCalculator speedCalculator = new SpeedCalculator();
+    private double elapsedTime = 0;
+
 
     [SerializeField]
     public float speed = SpeedCalculator.StartingSpeed;
@@ -45,9 +47,14 @@ public class Ball : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SetRandomDirection();
+        radius = transform.localScale.x / 2;
+    }
+
+    public void SetRandomDirection()
+    {
         var randDirection = new int[] { -1, 1 }[random.Next(2)];
         direction = GetRandomAngleInDirection(randDirection);
-        radius = transform.localScale.x / 2;
     }
 
     private Vector2 GetRandomAngleInDirection(int direction)
@@ -61,6 +68,8 @@ public class Ball : MonoBehaviour
     {
         if (CanMove)
         {
+            UpdateSpeed();
+
             transform.Translate(direction * speed * Time.deltaTime);
 
             if (transform.position.y < GameManager.bottomLeft.y + radius && direction.y < 0)
@@ -107,11 +116,33 @@ public class Ball : MonoBehaviour
             direction = new Vector2(paddle.isRight ? -1 : 1, (float)-Math.Sin(bounceAngle));
             direction.Normalize();
         }
+        else if (other.tag == "PowerUp")
+        {
+            var powerUp = other.GetComponent<PowerUp>();
+
+            powerUp.Activate();
+            print("Collision with powerup");
+        }
     }
 
-    public void UpdateSpeed(double numSeconds)
+    public void AddToElapsed(double deltaTime)
     {
-        speed = speedCalculator.CalculateSpeed(numSeconds);
+        elapsedTime += deltaTime;
+    }
+
+    public void UpdateSpeed()
+    {
+        speed = speedCalculator.CalculateSpeed(elapsedTime);
+    }
+
+    public void SpeedUp()
+    {
+        speed = SpeedCalculator.TopSpeed * 2;
+    }
+
+    public void SlowDown()
+    {
+        speed = speed / 2;
     }
 }
 

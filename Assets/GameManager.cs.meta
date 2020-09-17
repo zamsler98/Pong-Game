@@ -3,7 +3,12 @@ guid: ddedee832122b6b4ba118991573a16c1
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - ball: {instanceID: 0}
+  - paddle: {instanceID: 0}
+  - AudioSource: {instanceID: 0}
+  - ScoreBoard: {instanceID: 0}
+  - PowerUp: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
