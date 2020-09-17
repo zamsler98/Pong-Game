@@ -101,7 +101,7 @@ public class Paddle : MonoBehaviour
 
     public void Shrink()
     {
-        transform.localScale -= new Vector3(.5f, .5f, 0);
+        transform.localScale = new Vector3(.5f, .5f, 0);
     }
 
     public void NormalSize()

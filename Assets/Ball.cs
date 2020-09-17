@@ -13,7 +13,7 @@ public class Ball : MonoBehaviour
 
     private SpeedCalculator speedCalculator = new SpeedCalculator();
     private double elapsedTime = 0;
-
+    private bool PoweredUp = false;
 
     [SerializeField]
     public float speed = SpeedCalculator.StartingSpeed;
@@ -68,7 +68,10 @@ public class Ball : MonoBehaviour
     {
         if (CanMove)
         {
-            UpdateSpeed();
+            if (!PoweredUp)
+            {
+                UpdateSpeed();
+            }
 
             transform.Translate(direction * speed * Time.deltaTime);
 
@@ -137,12 +140,20 @@ public class Ball : MonoBehaviour
 
     public void SpeedUp()
     {
-        speed = SpeedCalculator.TopSpeed * 2;
+        PoweredUp = true;
+        speed = SpeedCalculator.TopSpeed + 5;
     }
 
     public void SlowDown()
     {
+        PoweredUp = true;
         speed = speed / 2;
+    }
+
+    public void StopPowerUp()
+    {
+        PoweredUp = false;
+        UpdateSpeed();
     }
 }
 
