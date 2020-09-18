@@ -25,6 +25,7 @@ public class PowerUp : MonoBehaviour
     {
         if (!activated)
         {
+            GetComponent<AudioSource>().Play();
             GetComponent<SpriteRenderer>().enabled = false;
             activated = true;
             ability.Activate();
