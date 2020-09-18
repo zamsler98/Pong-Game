@@ -119,6 +119,7 @@ public class GameManager : MonoBehaviour
                     var position = new Vector3((float)random.NextDouble() * 6 - 3, (float)random.NextDouble() * 6 - 3, 0);
                     powerUp.Init(ability, position);
                     PowerUpsOnField.Add(powerUp);
+                    powerUp.GameManager = this;
                 }
             }
             yield return new WaitForSeconds(1f);
@@ -236,6 +237,11 @@ public class GameManager : MonoBehaviour
         GameData.NumOfSeconds = (int)ScoreBoard.NumSeconds + ScoreBoard.NumMinutes * 60;
         DataAccess.SaveGameData(GameData);
         NewGameData();
+    }
+
+    public void PowerUpHit()
+    {
+        GameData.NumPowerUps++;
     }
 }
 

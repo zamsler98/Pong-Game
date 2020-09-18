@@ -7,6 +7,7 @@ public class PowerUp : MonoBehaviour
     public Ability ability;
     Sprite sprite;
     private bool activated = false;
+    public GameManager GameManager;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +26,7 @@ public class PowerUp : MonoBehaviour
     {
         if (!activated)
         {
+            GameManager.PowerUpHit();
             GetComponent<AudioSource>().Play();
             GetComponent<SpriteRenderer>().enabled = false;
             activated = true;
