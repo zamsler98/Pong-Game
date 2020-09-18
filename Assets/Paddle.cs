@@ -6,6 +6,7 @@ public class Paddle : MonoBehaviour
 {
     public float speed = 10;
     float height;
+    float originalHeight;
 
     public bool isRight;
     public IPaddleControls controls;
@@ -79,8 +80,8 @@ public class Paddle : MonoBehaviour
         var collider = this.GetComponent<BoxCollider2D>();
         collider.size = sprite.bounds.size;
         collider.offset = sprite.bounds.center;
-        height = collider.size.y;
-
+        originalHeight = collider.size.y;
+        height = originalHeight;
         //Update this paddle's position
         transform.position = pos;
     }
@@ -102,15 +103,18 @@ public class Paddle : MonoBehaviour
     public void Shrink()
     {
         transform.localScale = new Vector3(.5f, .5f, 0);
+        height /= 2;
     }
 
     public void NormalSize()
     {
         transform.localScale = new Vector3(1, 1, 1);
+        height = originalHeight;
     }
 
     public void Grow()
     {
         transform.localScale = new Vector3(1.5f, 1.5f, 0);
+        height *= 1.5f;
     }
 }
