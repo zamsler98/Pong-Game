@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -80,6 +81,8 @@ public class GameManager : MonoBehaviour
         StartCoroutine(CreatePowerUps());
     }
 
+    private List<PowerUp> PowerUpsOnField = new List<PowerUp>();
+
     IEnumerator CreatePowerUps()
     {
         var random = new System.Random();
@@ -115,6 +118,7 @@ public class GameManager : MonoBehaviour
                     }
                     var position = new Vector3((float)random.NextDouble() * 6 - 3, (float)random.NextDouble() * 6 - 3, 0);
                     powerUp.Init(ability, position);
+                    PowerUpsOnField.Add(powerUp);
                 }
             }
             yield return new WaitForSeconds(1f);
@@ -198,6 +202,10 @@ public class GameManager : MonoBehaviour
         leftPaddle.ResetToMiddle();
         rightPaddle.ResetToMiddle();
 
+        foreach (var powerUp in PowerUpsOnField)
+        {
+            powerUp.ability.Ball = gameBall;
+        }
         StartDelay(DelayType.NEWROUND);
     }
 

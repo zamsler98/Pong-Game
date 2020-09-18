@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PowerUp : MonoBehaviour
 {
-    private Ability ability;
+    public Ability ability;
     Sprite sprite;
     private bool activated = false;
 
@@ -51,10 +51,13 @@ public abstract class Ability
     public Sprite Sprite { get; protected set; }
     public float Length { get; protected set; }
 
-    public Ability(string spriteName, float length)
+    public Ball Ball { get; set; }
+
+    public Ability(string spriteName, float length, Ball ball)
     {
         Sprite = Resources.Load<Sprite>("Sprites/" + spriteName);
         Length = length;
+        Ball = ball;
     }
 
     public abstract void Activate();
@@ -66,12 +69,10 @@ public class SpeedUp : Ability
 {
     public static bool Activated = false;
 
-    Ball ball;
     GameManager gameManager;
 
-    public SpeedUp(Ball ball, GameManager gameManager) : base("speedPower", 2)
+    public SpeedUp(Ball ball, GameManager gameManager) : base("speedPower", 2, ball)
     {
-        this.ball = ball;
         this.gameManager = gameManager;
     }
 
@@ -79,7 +80,7 @@ public class SpeedUp : Ability
     {
         if (!Activated)
         {
-            ball.SpeedUp();
+            Ball.SpeedUp();
             gameManager.prevTime = 0;
             Activated = true;
         }
@@ -87,7 +88,7 @@ public class SpeedUp : Ability
 
     public override void Deactivate()
     {
-        ball.StopPowerUp();
+        Ball.StopPowerUp();
         Activated = false;
         gameManager.prevTime = Time.time;
     }
@@ -97,11 +98,9 @@ public class SlowDown : Ability
 {
     public static bool Activated;
 
-    Ball ball;
     GameManager gameManager;
-    public SlowDown(Ball ball, GameManager gameManager) : base("slowPower", 2)
+    public SlowDown(Ball ball, GameManager gameManager) : base("slowPower", 2, ball)
     {
-        this.ball = ball;
         this.gameManager = gameManager;
     }
 
@@ -109,14 +108,14 @@ public class SlowDown : Ability
     {
         if (!Activated)
         {
-            ball.SlowDown();
+            Ball.SlowDown();
             gameManager.prevTime = 0;
         }
     }
 
     public override void Deactivate()
     {
-        ball.StopPowerUp();
+        Ball.StopPowerUp();
         Activated = false;
         gameManager.prevTime = Time.time;
     }
@@ -128,21 +127,19 @@ public class Grow : Ability
 
     Paddle leftPaddle;
     Paddle rightPaddle;
-    Ball ball;
 
     private Paddle changedPaddle;
-    public Grow(Paddle leftPaddle, Paddle rightPaddle, Ball ball) : base("growPower", 4)
+    public Grow(Paddle leftPaddle, Paddle rightPaddle, Ball ball) : base("growPower", 4, ball)
     {
         this.leftPaddle = leftPaddle;
         this.rightPaddle = rightPaddle;
-        this.ball = ball;
     }
 
     public override void Activate()
     {
         if (!Activated)
         {
-            if (ball.Direction.x < 0)
+            if (Ball.Direction.x < 0)
             {
                 rightPaddle.Grow();
                 changedPaddle = rightPaddle;
@@ -168,22 +165,20 @@ public class Shrink : Ability
 
     Paddle leftPaddle;
     Paddle rightPaddle;
-    Ball ball;
 
     private Paddle changedPaddle;
 
-    public Shrink(Paddle leftPaddle, Paddle rightPaddle, Ball ball) : base("shrinkPower", 4)
+    public Shrink(Paddle leftPaddle, Paddle rightPaddle, Ball ball) : base("shrinkPower", 4, ball)
     {
         this.leftPaddle = leftPaddle;
         this.rightPaddle = rightPaddle;
-        this.ball = ball;
     }
 
     public override void Activate()
     {
         if (!Activated)
         {
-            if (ball.Direction.x >= 0)
+            if (Ball.Direction.x >= 0)
             {
                 rightPaddle.Shrink();
                 changedPaddle = rightPaddle;
@@ -207,17 +202,14 @@ public class ChangeDirection : Ability
 {
     private static bool Activated;
 
-    Ball ball;
-    public ChangeDirection(Ball ball) : base("reversePower", 0)
-    {
-        this.ball = ball;
-    }
+    public ChangeDirection(Ball ball) : base("reversePower", 0, ball) { }
+
 
     public override void Activate()
     {
         if (!Activated)
         {
-            ball.SetRandomDirection();
+            Ball.SetRandomDirection();
         }
     }
 
